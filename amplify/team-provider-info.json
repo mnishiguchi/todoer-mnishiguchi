@@ -1,0 +1,19 @@
+{
+    "dev": {
+        "awscloudformation": {
+            "AuthRoleName": "amplify-todoer-mnishiguchi-dev-95546-authRole",
+            "UnauthRoleArn": "arn:aws:iam::831702759394:role/amplify-todoer-mnishiguchi-dev-95546-unauthRole",
+            "AuthRoleArn": "arn:aws:iam::831702759394:role/amplify-todoer-mnishiguchi-dev-95546-authRole",
+            "Region": "us-east-1",
+            "DeploymentBucketName": "amplify-todoer-mnishiguchi-dev-95546-deployment",
+            "UnauthRoleName": "amplify-todoer-mnishiguchi-dev-95546-unauthRole",
+            "StackName": "amplify-todoer-mnishiguchi-dev-95546",
+            "StackId": "arn:aws:cloudformation:us-east-1:831702759394:stack/amplify-todoer-mnishiguchi-dev-95546/04520570-fe4a-11e9-9435-123cb1b397a4"
+        },
+        "categories": {
+            "auth": {
+                "todoerMnishiguchi": {}
+            }
+        }
+    }
+}
