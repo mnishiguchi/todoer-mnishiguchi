@@ -1,0 +1,25 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+      {
+          "Sid": "TodoerItemTable",
+          "Effect": "Allow",
+          "Action": [
+              "dynamodb:BatchGetItem",
+              "dynamodb:BatchWriteItem",
+              "dynamodb:PutItem",
+              "dynamodb:DeleteItem",
+              "dynamodb:GetItem",
+              "dynamodb:Scan",
+              "dynamodb:Query",
+              "dynamodb:UpdateItem"
+          ],
+          "Resource": [
+              "arn:aws:dynamodb:*:*:table/TodoerItem",
+              "arn:aws:dynamodb:*:*:table/TodoerItem/*",
+              "arn:aws:dynamodb:*:*:table/TodoerItems",
+              "arn:aws:dynamodb:*:*:table/TodoerItems/*"
+          ]
+      }
+  ]
+}

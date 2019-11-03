@@ -1,0 +1,5 @@
+type Todo @model @versioned @auth(rules: [{allow: owner}]) {
+  id: ID!
+  name: String!
+  status: String!
+}

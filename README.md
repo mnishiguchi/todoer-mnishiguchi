@@ -1,3 +1,5 @@
+This is inspired by this example app: https://github.com/ACloudGuru/todoer-demo
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
