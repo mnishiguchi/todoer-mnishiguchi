@@ -5,6 +5,7 @@ import { withAuthenticator } from 'aws-amplify-react';
 import awsconfig from './aws-exports';
 import * as queries from './graphql/queries';
 import * as mutations from './graphql/mutations';
+import * as subscriptions from './graphql/subscriptions';
 
 // https://aws-amplify.github.io/docs/js/react#add-auth
 Amplify.configure(awsconfig);
@@ -32,6 +33,37 @@ function App() {
   // componentDidMount
   useEffect(reloadTodoItems, []);
 
+  // TODO: Figure out how to set up subscription. Currently not working.
+  //   Error: "Variable 'owner' has coerced Null value for NonNull type 'String!'"
+  useEffect(() => {
+    (async () => {
+      API.graphql(graphqlOperation(subscriptions.onCreateTodo)).subscribe({
+        next: ({
+          value: {
+            data: { createTodo },
+          },
+        }) => {
+          setTodoItems(prev => [...prev, createTodo]);
+        },
+      });
+
+      API.graphql(graphqlOperation(subscriptions.onUpdateTodo)).subscribe({
+        next: ({
+          value: {
+            data: { updateTodo },
+          },
+        }) => {
+          setTodoItems(prev => {
+            // Maintain the list order.
+            const id = prev.findIndex(item => item.id === updateTodo.id);
+            prev[id] = updateTodo;
+            return [...prev];
+          });
+        },
+      });
+    })();
+  }, []);
+
   const addTodo = () => {
     if (!textInput || !textInput.current || !textInput.current.value) return;
 
@@ -42,22 +74,8 @@ function App() {
     };
 
     // Mutate dynamodb, then update local copy.
-    API.graphql(graphqlOperation(mutations.createTodo, { input })).then(
-      ({ data: { createTodo } }) => {
-        setTodoItems(prev => [...prev, createTodo]);
-      },
-    );
-
+    API.graphql(graphqlOperation(mutations.createTodo, { input }));
     textInput.current.value = '';
-  };
-
-  const updateTodoItem = input => {
-    setTodoItems(prev => {
-      // Maintain the list order.
-      const id = prev.findIndex(item => item.id === input.id);
-      prev[id] = input;
-      return [...prev];
-    });
   };
 
   return (
@@ -71,14 +89,14 @@ function App() {
         <input type="button" value="Add Item" onClick={addTodo} />
 
         {todoItems.map((item, i) => {
-          return <TodoItem key={i} item={item} onChange={updateTodoItem} />;
+          return <TodoItem key={i} item={item} />;
         })}
       </main>
     </div>
   );
 }
 
-function TodoItem({ item, onChange }) {
+function TodoItem({ item }) {
   const updateStatus = event => {
     // Make sure that input matches UpdateTodoInput schema.
     const input = {
@@ -87,14 +105,7 @@ function TodoItem({ item, onChange }) {
       expectedVersion: item.version++,
       status: event.target.checked ? STATUS_DONE : STATUS_NOT_DONE,
     };
-
-    console.log(input)
-    // Mutate dynamodb, then update local copy.
-    API.graphql(graphqlOperation(mutations.updateTodo, { input })).then(
-      ({ data: { updateTodo } }) => {
-        onChange(updateTodo);
-      },
-    );
+    API.graphql(graphqlOperation(mutations.updateTodo, { input }));
   };
 
   return (
