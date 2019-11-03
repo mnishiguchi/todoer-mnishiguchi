@@ -6,6 +6,8 @@ export const getTodo = `query GetTodo($id: ID!) {
     id
     name
     status
+    version
+    owner
   }
 }
 `;
@@ -19,6 +21,8 @@ export const listTodos = `query ListTodos(
       id
       name
       status
+      version
+      owner
     }
     nextToken
   }

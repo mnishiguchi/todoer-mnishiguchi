@@ -35,6 +35,7 @@ function App() {
   const addTodo = () => {
     if (!textInput || !textInput.current || !textInput.current.value) return;
 
+    // Make sure that input matches CreateTodoInput schema.
     const input = {
       name: textInput.current.value,
       status: STATUS_NEW,
@@ -51,11 +52,8 @@ function App() {
   };
 
   const updateTodoItem = input => {
-    // Approach A: simple but the order changes
-    // setTodoItems(prev => [...prev.filter(item => item.id !== input.id), input]);
-
-    // Approach B: Verbose but retains the order
     setTodoItems(prev => {
+      // Maintain the list order.
       const id = prev.findIndex(item => item.id === input.id);
       prev[id] = input;
       return [...prev];
@@ -82,11 +80,15 @@ function App() {
 
 function TodoItem({ item, onChange }) {
   const updateStatus = event => {
+    // Make sure that input matches UpdateTodoInput schema.
     const input = {
-      ...item,
+      id: item.id,
+      name: item.name,
+      expectedVersion: item.version++,
       status: event.target.checked ? STATUS_DONE : STATUS_NOT_DONE,
     };
 
+    console.log(input)
     // Mutate dynamodb, then update local copy.
     API.graphql(graphqlOperation(mutations.updateTodo, { input })).then(
       ({ data: { updateTodo } }) => {
